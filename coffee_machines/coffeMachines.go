@@ -1,46 +1,38 @@
 package coffee_machines
 
 import (
-	"bufio"
+	"Nospresso/validations"
 	"encoding/csv"
 	"errors"
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 )
 
 type Machine struct {
 	ID        int
 	Pincode   string
 	Inventory Inventory
+	Beverages []Beverage
+}
+
+func InitializeMachines(filename string) ([]Machine, error) {
+	machines, err := LoadCSV(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	beverages := InitializeBeverages()
+	for i := range machines {
+		machines[i].Beverages = beverages
+	}
+	return machines, nil
 }
 
 func SelectMachine(machines []Machine) *Machine {
 	fmt.Println("Select a machine by ID (1 to", len(machines), ")")
-	machineID := GetValidatedNumber("> ", 1, len(machines))
+	machineID := validations.GetValidatedNumber("> ", 1, len(machines))
 	return &machines[machineID-1]
-}
-
-func (m *Machine) RemoveIngredient(ingredient string, amount int) bool {
-	switch ingredient {
-	case "milk":
-		if m.Inventory.Milk.Quantity >= amount {
-			m.Inventory.Milk.Quantity -= amount
-			return true
-		}
-	case "sugar":
-		if m.Inventory.Sugar.Quantity >= amount {
-			m.Inventory.Sugar.Quantity -= amount
-			return true
-		}
-	case "coffee":
-		if m.Inventory.Coffee.Quantity >= amount {
-			m.Inventory.Coffee.Quantity -= amount
-			return true
-		}
-	}
-	return false
 }
 
 func LoadCSV(filename string) ([]Machine, error) {
@@ -105,37 +97,5 @@ func DisplayMachines(machines []Machine) {
 		fmt.Printf("ID: %d\nPincode: %s\n", machine.ID, machine.Pincode)
 		machine.Inventory.DisplayStock()
 		fmt.Println()
-	}
-}
-
-func ValidatePin(machine *Machine, attempts int) bool {
-	reader := bufio.NewReader(os.Stdin)
-	for attempts > 0 {
-		fmt.Println("Enter PIN:")
-		pin, _ := reader.ReadString('\n')
-		pin = strings.TrimSpace(pin)
-		if pin == machine.Pincode {
-			return true
-		}
-		attempts--
-		if attempts > 0 {
-			fmt.Printf("Incorrect PIN. %d attempts remaining.\n", attempts)
-		}
-	}
-	return false
-}
-
-func UpdatePin(machine *Machine) {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("Enter new 6-digit PIN:")
-	for {
-		pin, _ := reader.ReadString('\n')
-		pin = strings.TrimSpace(pin)
-		if len(pin) == 6 && isNumeric(pin) {
-			machine.Pincode = pin
-			fmt.Println("PIN updated successfully.")
-			break
-		}
-		fmt.Println("Invalid PIN. Enter a new 6-digit PIN:")
 	}
 }

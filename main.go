@@ -3,6 +3,7 @@ package main
 import (
 	"Nospresso/coffee_machines"
 	"Nospresso/modes_interfaces"
+	"Nospresso/validations"
 	"fmt"
 )
 
@@ -14,20 +15,24 @@ const (
 )
 
 func main() {
-	machines, err := coffee_machines.LoadCSV(filename)
+	machines, err := coffee_machines.InitializeMachines(filename)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	coffee_machines.DisplayMachines(machines)
+	beverages := coffee_machines.InitializeBeverages()
+
 	for {
 		fmt.Println("Nospresso Cafe")
-		fmt.Println("Select mode:")
 		fmt.Printf("%s) Client\n%s) Admin\n%s) Exit\n", ModeClient, ModeAdmin, ModeExit)
-		mode := coffee_machines.GetValidatedInput("> ", []string{ModeClient, ModeAdmin, ModeExit})
+		mode := validations.GetValidatedInput("> ", []string{
+			ModeClient,
+			ModeAdmin,
+			ModeExit})
 		switch mode {
 		case ModeClient:
-			modes_interfaces.ServeClient(machines)
+			modes_interfaces.ServeClient(machines, beverages)
 		case ModeAdmin:
 			modes_interfaces.ConfigAdmin(machines)
 		case ModeExit:
