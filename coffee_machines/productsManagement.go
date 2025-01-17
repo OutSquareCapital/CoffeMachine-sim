@@ -1,4 +1,4 @@
-package main
+package coffee_machines
 
 import "fmt"
 
@@ -27,7 +27,7 @@ func (inv *Inventory) UpdateStock(coffee, sugar, milk int) {
 	inv.Milk.Quantity -= milk
 }
 
-func handleRestock(machine *Machine) {
+func HandleRestock(machine *Machine) {
 	machine.Inventory.DisplayStock()
 	coffee := GetValidatedQuantity("Enter coffee powder (g) to add > ")
 	sugar := GetValidatedQuantity("Enter sugar (g) to add > ")

@@ -1,4 +1,4 @@
-package main
+package coffee_machines
 
 import (
 	"bufio"

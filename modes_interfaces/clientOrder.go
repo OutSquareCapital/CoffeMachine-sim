@@ -1,6 +1,7 @@
-package main
+package modes_interfaces
 
 import (
+	"Nospresso/coffee_machines"
 	"fmt"
 	"math/rand"
 	"strings"
@@ -12,14 +13,14 @@ func chooseBeverage() (string, float64, int, int) {
 	fmt.Println("1) Espresso - CHF 2.00")
 	fmt.Println("2) Cappuccino - CHF 2.50")
 	fmt.Println("3) Latte - CHF 2.70 (Small), CHF 3.20 (Medium), CHF 3.70 (Large)")
-	beverage := GetValidatedInput("> ", []string{"1", "2", "3"})
+	beverage := coffee_machines.GetValidatedInput("> ", []string{"1", "2", "3"})
 	switch beverage {
 	case "1":
 		return "Espresso", 2.00, 8, 0
 	case "2":
 		return "Cappuccino", 2.50, 6, 100
 	case "3":
-		size := GetValidatedInput("Select size: 1) Small, 2) Medium, 3) Large", []string{"1", "2", "3"})
+		size := coffee_machines.GetValidatedInput("Select size: 1) Small, 2) Medium, 3) Large", []string{"1", "2", "3"})
 		switch size {
 		case "1":
 			return "Latte (Small)", 2.70, 6, 120
@@ -32,12 +33,12 @@ func chooseBeverage() (string, float64, int, int) {
 	return "", 0.0, 0, 0
 }
 
-func serveClient(machines []Machine) {
+func ServeClient(machines []coffee_machines.Machine) {
 	if len(machines) == 0 {
 		fmt.Println("No machines available.")
 		return
 	}
-	machine := selectMachine(machines)
+	machine := coffee_machines.SelectMachine(machines)
 	beverageName, coffeePrice, coffeeNeeded, milkNeeded := chooseBeverage()
 	sugarPrice, sugarAmount := addSugar()
 	milkDose, milkPrice := addMilk(beverageName)
@@ -56,7 +57,7 @@ func addSugar() (float64, int) {
 	fmt.Println("2) Light (5g) - CHF 0.10")
 	fmt.Println("3) Medium (10g) - CHF 0.20")
 	fmt.Println("4) Heavy (15g) - CHF 0.30")
-	choice := GetValidatedInput("> ", []string{"1", "2", "3", "4"})
+	choice := coffee_machines.GetValidatedInput("> ", []string{"1", "2", "3", "4"})
 	switch choice {
 	case "2":
 		return 0.10, 5
@@ -72,11 +73,11 @@ func addMilk(beverageName string) (int, float64) {
 	if beverageName == "Espresso" {
 		return 0, 0.0
 	}
-	milkChoice := GetValidatedInput("Would you like to add extra milk?\n1) Yes\n2) No", []string{"1", "2"})
+	milkChoice := coffee_machines.GetValidatedInput("Would you like to add extra milk?\n1) Yes\n2) No", []string{"1", "2"})
 	if milkChoice == "2" {
 		return 0, 0.0
 	}
-	doses := GetValidatedNumber("How many doses? (1 to 3)", 1, 3)
+	doses := coffee_machines.GetValidatedNumber("How many doses? (1 to 3)", 1, 3)
 	return doses, float64(doses) * 0.05
 }
 

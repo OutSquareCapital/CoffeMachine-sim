@@ -1,4 +1,4 @@
-package main
+package coffee_machines
 
 import (
 	"bufio"
@@ -16,7 +16,7 @@ type Machine struct {
 	Inventory Inventory
 }
 
-func selectMachine(machines []Machine) *Machine {
+func SelectMachine(machines []Machine) *Machine {
 	fmt.Println("Select a machine by ID (1 to", len(machines), ")")
 	machineID := GetValidatedNumber("> ", 1, len(machines))
 	return &machines[machineID-1]
