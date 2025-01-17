@@ -1,4 +1,4 @@
-package coffee_machines
+package validations
 
 import (
 	"bufio"
@@ -51,23 +51,7 @@ func GetValidatedNumber(prompt string, min, max int) int {
 	}
 }
 
-func isNumeric(s string) bool {
+func IsNumeric(s string) bool {
 	_, err := strconv.Atoi(s)
 	return err == nil
-}
-
-func (inv *Inventory) VerifyStock(coffee, sugar, milk int) bool {
-	if inv.Coffee.Quantity < coffee {
-		fmt.Printf("Error: Insufficient %s to prepare the selected beverage.\n", inv.Coffee.Name)
-		return false
-	}
-	if inv.Sugar.Quantity < sugar {
-		fmt.Printf("Error: Insufficient %s to prepare the selected beverage.\n", inv.Sugar.Name)
-		return false
-	}
-	if inv.Milk.Quantity < milk {
-		fmt.Printf("Error: Insufficient %s to prepare the selected beverage.\n", inv.Milk.Name)
-		return false
-	}
-	return true
 }
